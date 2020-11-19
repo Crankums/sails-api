@@ -10,6 +10,7 @@
 
 module.exports.custom = {
   emailProofTokenTTL: 24 * 60 * 60 * 1000,
+  baseUrl: 'http://localhost:1337'
   /***************************************************************************
   *                                                                          *
   * Any other custom config this Sails app should use during development.    *
