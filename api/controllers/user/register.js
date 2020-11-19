@@ -8,17 +8,43 @@ module.exports = {
 
 
   inputs: {
-
+    fullName: {
+      type: 'string',
+      required: true
+    },
+    email: {
+      type: 'string',
+      required: true,
+      unique: true,
+      isEmail: true
+    },
+    password: {
+      type: 'string',
+      required: true,
+      minLength: 6,
+    },
   },
 
 
   exits: {
-
+    success: {
+      statusCode: 201,
+      description: 'New user created'
+    },
+    emailAlreadyInUse: {
+      statusCode: 400,
+      description: 'Email address already in use',
+    },
+    error: {
+      description: 'Something went wrong'
+    }
   },
 
 
-  fn: async function (inputs) {
-
+  fn: async function (inputs, exits) {
+    const newEmailAddress = inputs.email.toLowerCase();
+    const token = await sails.helpers.strings.random('url-friendly');
+    
     // All done.
     return;
 
