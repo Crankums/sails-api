@@ -1,11 +1,8 @@
 module.exports = {
 
-
   friendlyName: 'Register',
 
-
   description: 'Register user.',
-
 
   inputs: {
     fullName: {
@@ -25,7 +22,6 @@ module.exports = {
     },
   },
 
-
   exits: {
     success: {
       statusCode: 201,
@@ -44,7 +40,14 @@ module.exports = {
   fn: async function (inputs, exits) {
     const newEmailAddress = inputs.email.toLowerCase();
     const token = await sails.helpers.strings.random('url-friendly');
-    
+    let newUser = await User.create({
+      fullName: inputs.fullName,
+      email: inputs.email,
+      password: inputs.password,
+      emailProofToken: token,
+      emailProofTokenExpiresAt: Date.now() + sails.config.custom.emailProofTokenTTL,
+    }).fetch();
+    const confirmLink = `${sails.config.custom.baseUrl}/user/confirm?token=${token}`;
     // All done.
     return;
 
