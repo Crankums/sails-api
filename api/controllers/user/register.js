@@ -38,20 +38,42 @@ module.exports = {
 
 
   fn: async function (inputs, exits) {
-    const newEmailAddress = inputs.email.toLowerCase();
-    const token = await sails.helpers.strings.random('url-friendly');
-    let newUser = await User.create({
-      fullName: inputs.fullName,
-      email: inputs.email,
-      password: inputs.password,
-      emailProofToken: token,
-      emailProofTokenExpiresAt: Date.now() + sails.config.custom.emailProofTokenTTL,
-    }).fetch();
-    const confirmLink = `${sails.config.custom.baseUrl}/user/confirm?token=${token}`;
-    // All done.
-    return;
-
+    try{
+      const newEmailAddress = inputs.email.toLowerCase();
+      const token = await sails.helpers.strings.random('url-friendly');
+      let newUser = await User.create({
+        fullName: inputs.fullName,
+        email: newEmailAddress,
+        password: inputs.password,
+        emailProofToken: token,
+        emailProofTokenExpiresAt: Date.now() + sails.config.custom.emailProofTokenTTL,
+      }).fetch();
+      const confirmLink = `${sails.config.custom.baseUrl}/user/confirm?token=${token}`;
+      const email = {
+        to: newUser.email,
+        subject: `Confirm your account`,
+        template: 'confirm',
+        context: {
+          name: newUser.name,
+          confirmLink: confirmLink
+        },
+      };
+      await sails.helpers.sendMail(email);
+      // All done.
+      return exits.success({
+        message: `An account has been created for ${newUser.email} successfully. Check your email to verify`
+      });
+    } catch (error) {
+      if (error.code === 'E_UNIQUE') {
+        return exits.emailAlreadyInUse({
+          message: 'Oops :) An Error Occurred',
+          error: 'This email already exists',
+        });
+      }
+      return exits.error({
+        message: 'Oops, an error occurred',
+        error: error.message
+      });
+    }
   }
-
-
 };
