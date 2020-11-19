@@ -6,6 +6,7 @@
  */
 
 module.exports = {
+  tableName: 'users',
 
   attributes: {
     fullName: {
@@ -50,5 +51,13 @@ module.exports = {
       columnName: 'password_reset_token_expires_at'
     },
   },
+  customToJSON: function () {
+    return _.omit(this, ['password']);
+  },
+  beforeCreate: async function (values, proceed){
+    const hashedPassword = await sails.helpers.passwords.hashPassword(values.password);
+    values.password = hashedPassword;
+    return proceed();
+  }
 };
 
