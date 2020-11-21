@@ -1,3 +1,4 @@
+const nodemailer = require('nodemailer');
 var nodemailerSendgrid = require('nodemailer-sendgrid');
 const hbs = require('nodemailer-express-handlebars');
 
@@ -45,7 +46,7 @@ module.exports = {
         from: 'Sails-Api <alert@sailsapi.com',
         ...inputs.options,
       };
-      await transporter.sendmail(emailOptions);
+      await transporter.sendMail(emailOptions);
     } catch (error) {
       sails.log(error);
     }
