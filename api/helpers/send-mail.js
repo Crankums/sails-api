@@ -43,7 +43,7 @@ module.exports = {
     );
     try {
       let emailOptions = {
-        from: 'Sails-Api <alert@sailsapi.com',
+        from: 'LogrocketSailsAPI <alert@logrocketsailsapi.com>',
         ...inputs.options,
       };
       await transporter.sendMail(emailOptions);
