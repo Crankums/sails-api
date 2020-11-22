@@ -32,21 +32,25 @@ module.exports = {
     }
   },
 
-  fn: async function (inputs) {
+  fn: async function (inputs, exits) {
     try {
+
       const user = await User.findOne({ email: inputs.email});
+
       if (!user) {
         return exits.notAUser({
           error: `An account belonging to ${inputs.email} was not found.`
         });
       }
+
       await sails.helpers.passwords
         .checkPassword(inputs.password, user.password)
         .intercept('incorrect', (error) => {
           exits.passwordMismatch({ error: error.message });
         });
-      const token = await sails.helpers.generateNewJwtToken(user.email);
-      this.req.me = user;
+
+      const token = await sails.helpers.generateNewJwt(user.email);
+
       return exits.success({
         message: `${user.email} has been logged in.`,
         data: user,
