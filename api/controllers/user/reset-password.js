@@ -23,7 +23,13 @@ module.exports = {
 
 
   exits: {
-
+    success: {
+      description: 'Password successfully updated, and requesting user agent automatically logged in.'
+    },
+    invalidToken: {
+      statusCode: 401,
+      description: 'The provided password token is invalid, expired, or has already been used.',
+    },
   },
 
 
