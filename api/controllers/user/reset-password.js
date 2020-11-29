@@ -8,6 +8,16 @@ module.exports = {
 
 
   inputs: {
+    password: {
+      description: 'The new, unencrypted password.',
+      example: 'myfancypassword',
+      required: true
+    },
+    token: {
+      description: 'The password token that was in the forgot-password endpoint',
+      example: 'gwa8gs8hgw9h2g9hg29',
+      required: true
+    }
 
   },
 
