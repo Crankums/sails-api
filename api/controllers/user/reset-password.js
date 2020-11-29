@@ -33,7 +33,7 @@ module.exports = {
   },
 
 
-  fn: async function (inputs) {
+  fn: async function (inputs, exits) {
     if (!inputs.token) {
       return this.exits.invalidToken({
         error: 'Your reset token is either invalid or expired.'
