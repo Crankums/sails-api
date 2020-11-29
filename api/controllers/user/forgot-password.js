@@ -14,9 +14,7 @@ module.exports = {
       type: 'string',
       required: true
     },
-
   },
-
 
   exits: {
     success: {
@@ -27,24 +25,25 @@ module.exports = {
 
 
   fn: async function (inputs, exits) {
-    const user = User.findOne({email: inputs.email});
+    var user = await User.findOne({ email: inputs.email });
     if (!user) {
       return;
     }
-    const token = sails.helpers.strings.random('url-friendly');
-    await User.update({id: user.id}).set({
+    const token = await sails.helpers.strings.random('url-friendly');
+    await User.update({ id: user.id }).set({
       passwordResetToken: token,
-      passwordResetTokenExpiresAt: Date.now() + sails.config.custom.passwordResetTokenTTL,
+      passwordResetTokenExpiresAt:
+      Date.now() + sails.config.custom.passwordResetTokenTTL,
     });
     const recoveryLink = `${sails.config.custom.baseUrl}/user/reset-password?token=${token}`;
     const email = {
-      to: user.emailAdress,
+      to: user.email,
       subject: 'Reset Password',
       template: 'forgot-password',
       context: {
         name: user.fullName,
-        recoverLink: recoveryLink
-      }
+        recoverLink: recoveryLink,
+      },
     };
     try {
       await sails.helpers.sendMail(email);
@@ -52,7 +51,7 @@ module.exports = {
       sails.log(error);
     }
     return exits.success({
-      message: `A reset password email has been sent to ${user.email}.`
+      message: `A reset password email has been sent to ${user.email}.`,
     });
-  }
+  },
 };

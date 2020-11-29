@@ -10,6 +10,7 @@
 
 module.exports.custom = {
   emailProofTokenTTL: 24 * 60 * 60 * 1000,
+  passwordResetTokenTTL: 24 * 60 * 60 * 1000,
   baseUrl: 'http://localhost:1337'
   /***************************************************************************
   *                                                                          *
