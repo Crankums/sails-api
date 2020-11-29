@@ -37,10 +37,22 @@ module.exports = {
       passwordResetTokenExpiresAt: Date.now() + sails.config.custom.passwordResetTokenTTL,
     });
     const recoveryLink = `${sails.config.custom.baseUrl}/user/reset-password?token=${token}`;
-    // All done.
-    return;
-
+    const email = {
+      to: user.emailAdress,
+      subject: 'Reset Password',
+      template: 'forgot-password',
+      context: {
+        name: user.fullName,
+        recoverLink: recoveryLink
+      }
+    };
+    try {
+      await sails.helpers.sendMail(email);
+    } catch (error) {
+      sails.log(error);
+    }
+    return exits.success({
+      message: `A reset password email has been sent to ${user.email}.`
+    });
   }
-
-
 };
