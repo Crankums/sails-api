@@ -34,10 +34,32 @@ module.exports = {
 
 
   fn: async function (inputs) {
-
-    // All done.
-    return;
-
+    if (!inputs.token) {
+      return this.exits.invalidToken({
+        error: 'Your reset token is either invalid or expired.'
+      });
+    }
+    const user = await User.findOne({ passwordResetToken: inputs.token });
+    if (!user || user.passwordResetTokenExpiresAt <= Date.now()) {
+      return exits.invalidToken({
+        error: 'Your reset token is either invalid or expired.'
+      });
+    }
+    const hashedPassword = await sails.helpers.passwords.hashedPassword(
+      inputs.password
+    );
+    await User.updateOne({ id: user.id }).set({
+      password: hashedPassword,
+      passwordResetToken: '',
+      passwordResetTokenExpiresAt: 0
+    });
+    const token = await sails.helpers.generateJwtToken(user.email);
+    this.req.user = user;
+    return exits.success({
+      message: `Password reset successful. ${user.email} has been logged in.`,
+      data: user,
+      token
+    });
   }
 
 
