@@ -49,7 +49,9 @@ module.exports.datastores = {
     *                                                                          *
     ***************************************************************************/
     adapter: 'sails-postgresql',
-    url: 'postresql://sails-api:sails-api-001@localhost:5432/sails-api',
+    // url: 'postresql://sails-api:sails-api-001@localhost:5432/sails-api',
+    url: 'postgres://zopilwilwpmclr:f1eabe3abe27e3169a55231e5dd015c1e3abee4185aaf24d2121b70389a4ef51@ec2-34-192-122-0.compute-1.amazonaws.com:5432/dvqdd7hh6lpq2',
+    ssl: true,
   },
 
 
